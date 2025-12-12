@@ -1,7 +1,7 @@
 resource "azurerm_virtual_network" "Vnet" {
     
     name="${local.resource_pefiex}-${var.Vnet_name}"
-  resource_group_name = var.Resource_group_name
+  resource_group_name = azurerm_resource_group.rg.name
   location = var.Resource_group_Location
   address_space = var.Vnet_address_prefix
   }
@@ -10,7 +10,7 @@ resource "azurerm_virtual_network" "Vnet" {
   name = "${azurerm_virtual_network.Vnet.name}-${var.web_Tier_subnet}"
   address_prefixes =var.web_Tier_subnet_address_prefix
   virtual_network_name = azurerm_virtual_network.Vnet.name
-  resource_group_name = var.Resource_group_name
+  resource_group_name =  azurerm_resource_group.rg.name
     
   }
 
@@ -18,7 +18,7 @@ resource "azurerm_virtual_network" "Vnet" {
   name = "${azurerm_virtual_network.Vnet.name}-${var.app_Tier_subnet}"
   address_prefixes =var.app_Tier_subnet_address_prefix
   virtual_network_name = azurerm_virtual_network.Vnet.name
-  resource_group_name = var.Resource_group_name
+  resource_group_name = azurerm_resource_group.rg.name
     
   }
 
@@ -27,7 +27,7 @@ resource "azurerm_virtual_network" "Vnet" {
   name = "${azurerm_virtual_network.Vnet.name}-${var.DB_Tier_subnet}"
   address_prefixes =var.DB_Tier_subnet_address_prefix
   virtual_network_name = azurerm_virtual_network.Vnet.name
-  resource_group_name = var.Resource_group_name
+  resource_group_name =  azurerm_resource_group.rg.name
     
   }
 
@@ -35,7 +35,7 @@ resource "azurerm_virtual_network" "Vnet" {
   name = "${azurerm_virtual_network.Vnet.name}-${var.Bastion_Tier_subnet}"
   address_prefixes =var.Bastion_app_Tier_subnet_address_prefix
   virtual_network_name = azurerm_virtual_network.Vnet.name
-  resource_group_name = var.Resource_group_name
+  resource_group_name =  azurerm_resource_group.rg.name
     
   }
 
@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "Web_nsg" {
     depends_on = [ azurerm_resource_group.rg ]
   name = "${var.web_Tier_subnet}-nsg"
   location = var.Resource_group_Location
-  resource_group_name = var.Resource_group_name
+  resource_group_name =  azurerm_resource_group.rg.name
   
 }
 
@@ -51,7 +51,7 @@ resource "azurerm_network_security_group" "app_nsg" {
     depends_on = [ azurerm_resource_group.rg ]
   name = "${var.app_Tier_subnet}-nsg"
   location = var.Resource_group_Location
-  resource_group_name = var.Resource_group_name
+  resource_group_name = azurerm_resource_group.rg.name
   
 }
 
@@ -59,14 +59,14 @@ resource "azurerm_network_security_group" "DB_nsg" {
     depends_on = [ azurerm_resource_group.rg ]
   name = "${var.DB_Tier_subnet}-nsg"
   location = var.Resource_group_Location
-  resource_group_name = var.Resource_group_name
+  resource_group_name =azurerm_resource_group.rg.name
   
 }
 resource "azurerm_network_security_group" "Bastion_nsg" {
     depends_on = [ azurerm_resource_group.rg ]
   name = "${var.Bastion_Tier_subnet}-nsg"
   location = var.Resource_group_Location
-  resource_group_name = var.Resource_group_name
+  resource_group_name =  azurerm_resource_group.rg.name
   
 }
 
@@ -109,7 +109,7 @@ for_each = local.web_Nsg_ports
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = var.Resource_group_name
+  resource_group_name         =  azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.Web_nsg.name
 
   depends_on = [ azurerm_network_security_group.Web_nsg ]
@@ -126,7 +126,7 @@ for_each = local.web_Nsg_ports
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = var.Resource_group_name
+  resource_group_name         =  azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.app_nsg.name
 
 }
@@ -142,7 +142,7 @@ for_each = local.db_inbound_ports_map
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = var.Resource_group_name
+  resource_group_name         =  azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.DB_nsg.name
 
 }
@@ -158,7 +158,7 @@ for_each = local.bastion_inbound_ports_map
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
-  resource_group_name         = var.Resource_group_name
+  resource_group_name         =  azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.Bastion_nsg.name
 
 }
